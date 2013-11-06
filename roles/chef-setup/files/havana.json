@@ -26,6 +26,9 @@
         "nova": {
             "network": {
                 "provider": "neutron"
+            },
+            "libvirt": {
+                "virt_type": "qemu"
             }
         },
         "neutron": {

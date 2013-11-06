@@ -34,7 +34,7 @@
   tags:
   - upload
   - environment
-  copy: src={{environment_file}} dest={{environment_file}}
+  copy: src={{environment_file}} dest={{ansible_env.HOME}}/{{environment_file}}
 
 - name: Upload environment
   tags:
