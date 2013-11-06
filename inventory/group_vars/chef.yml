@@ -1,4 +1,6 @@
 ---
+cookbooks_branch: master
+environment_file: havana.json
 chef_environment: havana
 chef_runlists:
 - "role[ha-controller1],role[single-network-node]"

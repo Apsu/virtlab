@@ -1,6 +1,4 @@
 ---
-cookbooks_branch: ha-ns
-environment_file: havana.json
 ifaces:
   svc:
     iface: eth2
