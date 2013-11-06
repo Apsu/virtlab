@@ -1,0 +1,64 @@
+---
+- name: Setup chef server/clients
+  tags: chef-setup
+  hosts: chef
+  gather_facts: true
+  roles:
+  - {role: chef-setup, tags: ['chef-setup']}
+
+- name: Run chef client for base role
+  tags: reboot-cluster
+  hosts: cluster
+  gather_facts: false
+  roles:
+  - {role: chef-client, tags: ['chef-client']}
+
+- name: Reboot cluster for base role
+  tags: reboot-cluster
+  hosts: cluster
+  gather_facts: false
+  roles:
+  - {role: reboot-cluster, tags: ['reboot-cluster']}
+
+- name: Setup chef roles
+  tags: chef-roles
+  hosts: chef
+  gather_facts: false
+  roles:
+  - {role: chef-roles, tags: ['chef-roles']}
+
+- name: Run chef client on infra1
+  tags:
+  - chef-client
+  - chef-infra1
+  hosts: infra[0]
+  gather_facts: false
+  roles:
+  - {role: chef-client, tags: ['chef-client']}
+
+- name: Run chef client on infra2
+  tags:
+  - chef-client
+  - chef-infra2
+  hosts: infra[1]
+  gather_facts: false
+  roles:
+  - {role: chef-client, tags: ['chef-client']}
+
+- name: Run chef client on infra1 again
+  tags:
+  - chef-client
+  - chef-infra1-2
+  hosts: infra[0]
+  gather_facts: false
+  roles:
+  - {role: chef-client, tags: ['chef-client']}
+
+- name: Run chef client on compute nodes
+  tags:
+  - chef-client
+  - chef-compute
+  hosts: compute
+  gather_facts: false
+  roles:
+  - {role: chef-client, tags: ['chef-client']}

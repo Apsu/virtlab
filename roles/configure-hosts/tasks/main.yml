@@ -1,0 +1,41 @@
+---
+- name: Updating packages
+  tags: packages
+  yum: name=* state=latest
+
+- name: Stop iptables
+  tags: services
+  service: name=iptables state=stopped
+
+- name: Disable postfix
+  tags: services
+  service: name=postfix state=stopped enabled=no
+
+- name: Clear /etc/hosts
+  tags: hosts
+  shell: echo -n > /etc/hosts
+ 
+- name: Add IPv4 localhost
+  tags: hosts
+  host: hostname=localhost ip=127.0.0.1 state=present
+ 
+- name: Add IPv6 localhost
+  tags: hosts
+  host: hostname=localhost6 ip=::1 state=present
+ 
+- name: Add cluster hosts
+  tags: hosts
+  host: hostname={{item}} ip={{hostvars[item].ifaces.svc.ipv4}} state=present
+  when: "'svc' in hostvars[item].ifaces"
+  with_items: groups.hosts
+ 
+- name: Configure network interfaces
+  tags: networks
+  template: src=ifcfg.j2 dest=/etc/sysconfig/network-scripts/ifcfg-{{item.iface}}
+  when: item.iface in ansible_interfaces
+  with_items: ifaces.values()
+  changed_when: True
+  notify:
+  - Down interfaces
+  - Up interfaces
+  - Ping addresses

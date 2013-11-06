@@ -1,0 +1,4 @@
+---
+pkg_list: apache,mysql,monit,rabbitmq,nova,glance,cinder,neutron,keystone,keepalived,memcached,haproxy,chef
+proc_list: [apache,mysql,monit,rabbitmq,nova,glance,cinder,neutron,keystone,keepalived,memcached,haproxy,chef]
+file_list: ["/etc/{mysql,chef} /var/lib/mysql ~/.{erlang,my,chef}* /var/{,opt/}chef"]

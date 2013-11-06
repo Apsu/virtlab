@@ -1,0 +1,5 @@
+---
+- include: provision.yml
+- include: configure.yml
+- include: clean.yml
+- include: chef.yml

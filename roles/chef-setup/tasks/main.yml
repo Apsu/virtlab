@@ -1,0 +1,100 @@
+---
+- name: Install git
+  tags: git
+  yum: name=git state=present
+ 
+- name: Checkout support-tools
+  tags: git
+  git: repo=https://github.com/Apsu/support-tools dest=support-tools
+ 
+- name: Install chef server
+  tags: chef-server
+  command: ./install-chef-server.sh chdir=support-tools/chef-install
+ 
+- name: Install chef-cookbooks
+  tags: 
+  - git
+  - upload
+  - cookbooks
+  git: repo=https://github.com/rcbops/chef-cookbooks dest=chef-cookbooks version={{cookbooks_branch}}
+
+- name: Upload cookbooks
+  tags:
+  - upload
+  - cookbooks
+  command: knife cookbook upload -o chef-cookbooks/cookbooks -a
+
+- name: Upload roles
+  tags:
+  - upload
+  - roles
+  shell: knife role from_file chef-cookbooks/roles/*.rb
+ 
+- name: Copy environment file
+  tags:
+  - upload
+  - environment
+  copy: src={{environment_file}} dest={{environment_file}}
+
+- name: Upload environment
+  tags:
+  - upload
+  - environment
+  command: knife environment from_file {{environment_file}}
+ 
+- name: Get node list
+  tags:
+  - nodes
+  - bootstrap
+  command: knife node list
+  register: list
+  changed_when: False # Doesn't apply
+
+- name: Bootstrap nodes
+  tags:
+  - nodes
+  - bootstrap
+  command: knife bootstrap {{item}} --server-url https://{{ifaces.svc.ipv4}}:443
+  register: bootstrap
+  when: not item in list.stdout
+  with_items: groups.cluster
+
+- name: Wait for solr cache
+  tags:
+  - nodes
+  - bootstrap
+  command: knife exec -E "nodes.search('name:*') {|n| puts n.name}"
+  when: bootstrap|changed
+  register: output
+  until: item in output.stdout
+  retries: 10
+  delay: 10
+  with_items: groups.cluster
+  changed_when: output.stdout
+
+- name: Set node environments
+  tags:
+  - nodes
+  - environment
+  command: knife exec -E "nodes.search('name:*') {|n| n.chef_environment('{{chef_environment}}'); puts n.name; n.save}"
+  register: output
+  changed_when: output.stdout != ""
+
+- name: Wait for Solr cache
+  tags:
+  - nodes
+  - environment
+  command: knife exec -E "nodes.search('chef_environment:_default') {|n| puts n.name}"
+  register: output
+  until: output.stdout == ""
+  retries: 10
+  delay: 10
+  changed_when: output.stdout != ""
+
+- name: Add base role
+  tags:
+  - nodes
+  - runlist
+  command: knife node run_list add {{item}} "role[base]"
+  with_items: groups.cluster
+  changed_when: False

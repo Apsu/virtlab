@@ -1,0 +1,26 @@
+---
+- name: Deconfigure chef-server
+  tags: packages
+  command: chef-server-ctl uninstall
+
+- name: Remove chef-server
+  tags: packages
+  yum: name=chef-server state=absent
+  when: ansible_os_family == "RedHat"
+
+- name: Remove chef-server
+  tags: packages
+  apt: name=chef-server state=absent
+  when: ansible_os_family == "Debian"
+
+- name: Kill processes
+  tags: processes
+  command: pkill -9 -f "(/opt/chef|beam|postgres)"
+
+- name: Clean files
+  tags: files
+  shell: rm -rf /etc/chef-server /etc/chef /opt/chef-server /opt/chef ~/.chef /var/opt/chef-server/ /var/chef /var/log/chef-server/ ~/chef-server-cleanse* ~/validation.pem
+
+- name: Fixup ~/.bashrc
+  tags: files
+  shell: sed -i '/export PATH=${PATH}:\/opt\/chef-server\/embedded\/bin/d' ~/.bashrc; sed -i '/export OLDPATH/d' ~/.bashrc

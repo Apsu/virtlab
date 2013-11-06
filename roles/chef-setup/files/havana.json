@@ -1,0 +1,85 @@
+{
+    "name": "havana",
+    "description": "OpenStack Havana",
+    "cookbook_versions": {
+    },
+    "json_class": "Chef::Environment",
+    "chef_type": "environment",
+    "default_attributes": {
+    },
+    "override_attributes": {
+        "openssh": {
+            "server": {
+                "subsystem": "sftp /usr/libexec/openssh/sftp-server"
+            }
+        },
+        "monitoring": {
+            "procmon_provider": "monit"
+        },
+        "glance": {
+            "image_upload": true,
+            "images": [
+                "cirros",
+                "precise"
+            ]
+        },
+        "nova": {
+            "network": {
+                "provider": "neutron"
+            }
+        },
+        "neutron": {
+            "ovs": {
+                "network_type": "gre",
+                "provider_networks": [
+                    {
+                        "label": "ph-10g",
+                        "bridge": "br-10g",
+                        "vlans": "1:1000"
+                    }
+                ]
+            }
+        },
+        "vips": {
+            "rabbitmq-queue": "172.20.0.200",
+            "horizon-dash": "172.20.0.201",
+            "neutron-api": "172.20.0.201",
+            "horizon-dash_ssl": "172.20.0.201",
+            "keystone-service-api": "172.20.0.201",
+            "keystone-admin-api": "172.20.0.201",
+            "keystone-internal-api": "172.20.0.201",
+            "nova-xvpvnc-proxy": "172.20.0.201",
+            "nova-api": "172.20.0.201",
+            "nova-ec2-public": "172.20.0.201",
+            "nova-novnc-proxy": "172.20.0.201",
+            "cinder-api": "172.20.0.201",
+            "glance-api": "172.20.0.201",
+            "glance-registry": "172.20.0.201",
+            "swift-proxy": "172.20.0.201",
+            "mysql-db": "172.20.0.202",
+            "config": {
+                "172.20.0.200": {
+                    "vrid": 11,
+                    "network": "public"
+                },
+                "172.20.0.201": {
+                    "vrid": 12,
+                    "network": "public"
+                },
+                "172.20.0.202": {
+                    "vrid": 10,
+                    "network": "public"
+                }
+            }
+        },
+        "mysql": {
+            "allow_remote_root": true,
+            "root_network_acl": "%"
+        },
+        "osops_networks": {
+            "nova": "172.20.0.0/25",
+            "public": "172.20.0.0/25",
+            "management": "172.20.0.0/25"
+        }
+    }
+}

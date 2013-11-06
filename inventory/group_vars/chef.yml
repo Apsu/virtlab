@@ -1,0 +1,6 @@
+---
+chef_environment: havana
+chef_runlists:
+- "role[ha-controller1],role[single-network-node]"
+- "role[ha-controller2],role[single-network-node]"
+- "role[single-compute]"

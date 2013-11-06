@@ -1,0 +1,7 @@
+---
+- name: Configure hosts
+  tags: configure-hosts
+  hosts: hosts
+  gather_facts: true
+  roles:
+  - {role: configure-hosts, tags: ['configure-hosts']}

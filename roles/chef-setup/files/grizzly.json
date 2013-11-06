@@ -1,0 +1,80 @@
+{
+  "name": "grizzly",
+  "description": "OpenStack Grizzly",
+  "cookbook_versions": {
+  },
+  "json_class": "Chef::Environment",
+  "chef_type": "environment",
+  "default_attributes": {
+  },
+  "override_attributes": {
+    "monitoring": {
+      "procmon_provider": "none"
+    },
+    "glance": {
+      "image_upload": true,
+      "images": [
+        "cirros",
+        "precise"
+      ]
+    },
+    "nova": {
+      "network": {
+        "provider": "quantum"
+      }
+    },
+    "quantum": {
+      "ovs": {
+        "network_type": "gre",
+        "provider_networks": [
+          {
+            "label": "ph-10g",
+            "bridge": "br-10g",
+            "vlans": "1:1000"
+          }
+        ]
+      }
+    },
+    "vips": {
+      "rabbitmq-queue": "192.168.100.200",
+      "horizon-dash": "192.168.100.201",
+      "quantum-api": "192.168.100.201",
+      "horizon-dash_ssl": "192.168.100.201",
+      "keystone-service-api": "192.168.100.201",
+      "keystone-admin-api": "192.168.100.201",
+      "keystone-internal-api": "192.168.100.201",
+      "nova-xvpvnc-proxy": "192.168.100.201",
+      "nova-api": "192.168.100.201",
+      "nova-ec2-public": "192.168.100.201",
+      "nova-novnc-proxy": "192.168.100.201",
+      "cinder-api": "192.168.100.201",
+      "glance-api": "192.168.100.201",
+      "glance-registry": "192.168.100.201",
+      "swift-proxy": "192.168.100.201",
+      "mysql-db": "192.168.100.202",
+      "config": {
+        "192.168.100.200": {
+          "vrid": 11,
+          "network": "public"
+        },
+        "192.168.100.201": {
+          "vrid": 12,
+          "network": "public"
+        },
+        "192.168.100.202": {
+          "vrid": 10,
+          "network": "public"
+        }
+      }
+    },
+    "mysql": {
+      "allow_remote_root": true,
+      "root_network_acl": "%"
+    },
+    "osops_networks": {
+      "nova": "192.168.100.0/25",
+      "public": "192.168.100.0/25",
+      "management": "192.168.100.0/25"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+---
+- name: Reboot servers
+  tags: reboot
+  command: /sbin/reboot
+
+- name: Wait for ssh to come back
+  tags: reboot
+  local_action:
+    module: wait_for
+    delay: 10
+    host: "{{ansible_ssh_host}}"
+    port: 22
+    state: started
+    timeout: 300
+
+#- name: Wait for reboot to complete
+#  tags: reboot
+#  local_action:
+#    module: rax
+#    name: "{{inventory_hostname}}"
+#    credentials: "{{rax_creds}}"
+#    region: "{{rax_region}}"
+#    flavor: "{{rax_flavor}}"
+#    image: "{{rax_image}}"
+#    wait: yes
+#    state: active

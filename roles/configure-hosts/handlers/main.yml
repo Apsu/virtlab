@@ -1,0 +1,17 @@
+---
+- name: Down interfaces
+  command: ifdown {{item.iface}}
+  when: item.iface in ansible_interfaces
+  with_items: ifaces.values()
+
+- name: Up interfaces
+  command: ifup {{item.iface}}
+  when: item.iface in ansible_interfaces
+  with_items: ifaces.values()
+
+- name: Ping addresses
+  command: ping -c 3 -q {{item.ipv4}}
+  register: output
+  when: item.iface in ansible_interfaces and item.ipv4 is defined
+  with_items: ifaces.values()
+  changed_when: output.rc != 0

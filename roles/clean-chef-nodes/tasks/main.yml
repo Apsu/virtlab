@@ -1,0 +1,26 @@
+---
+- name: Get node list
+  tags:
+  - nodes
+  - clients
+  command: knife node list
+  register: list
+  changed_when: False # Doesn't apply
+
+- name: Clean chef nodes
+  tags: nodes
+  command: knife node delete {{item}} -y
+  register: output
+  when: item in list.stdout
+  with_items: groups.cluster
+  failed_when: output.rc not in [0,100]
+  changed_when: "'Deleted' in output.stdout"
+
+- name: Clean chef clients
+  tags: clients
+  command: knife client delete {{item}} -y
+  register: output
+  when: item in list.stdout
+  with_items: groups.cluster
+  failed_when: output.rc not in [0,100]
+  changed_when: "'Deleted' in output.stdout"

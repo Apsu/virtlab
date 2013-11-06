@@ -1,0 +1,16 @@
+---
+- name: Clean packages
+  tags: packages
+  yum: name={{pkg_list}} state=absent
+
+- name: Clean processes
+  tags: processes
+  command: pkill -9 -f "({{proc_list|join('|')}})"
+  register: result
+  changed_when: result.rc == 0
+  failed_when: result.rc not in [0,1]
+
+- name: Clean files
+  tags: files
+  shell: rm -rf {{item}}
+  with_items: file_list

@@ -1,0 +1,34 @@
+---
+- name: Delete hosts if they exist
+  tags: delete-hosts
+  local_action:
+    module: rax
+    name: "{{inventory_hostname}}"
+    credentials: "{{rax_creds}}"
+    region: "{{rax_region}}"
+    flavor: "{{rax_flavor}}"
+    image: "{{rax_image}}"
+    wait: yes
+    state: absent
+
+- name: Ensure hosts exist
+  tags: ensure-hosts
+  local_action:
+    module: rax
+    name: "{{inventory_hostname}}"
+    credentials: "{{rax_creds}}"
+    key_name: "{{rax_keypair}}"
+    networks: "{{rax_networks}}"
+    region: "{{rax_region}}"
+    flavor: "{{rax_flavor}}"
+    image: "{{rax_image}}"
+    disk_config: "{{rax_diskconfig}}"
+    wait: yes
+    state: active
+  register: rax
+
+- name: Store host access IPs
+  tags: ensure-hosts
+  set_fact: ansible_ssh_host={{item.accessIPv4}}
+  when: item.name == inventory_hostname # Avoid dupes
+  with_items: rax.instances
