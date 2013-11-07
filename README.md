@@ -48,8 +48,8 @@ Workflow Playbooks
 
 Currently there are two main playbooks combining various functional playbooks for common workflows:
 
-* cluster.yml is the primary playbook for kicking an entire cluster, end to end. The included provision.yml will delete the hosts every time, so an easy way to rerun this is by passing --skip-tags delete-hosts to ansible-playbook. It then runs configure.yml and chef.yml to fully configure the cluster hosts and Chef it up.
-* reconfigure.yml is designed for reconfiguring a cluster without rekicking the hosts. It will clean all of the Chef cruft and Openstack packages on the cluster in a way that lets you cleanly start the chef.yml again. This is handy for if Chef failed to configure the cluster completely, mysql is unhappy and your life is hard. Unlike cluster.yml, you'll want to pass --skip-tags delete-hosts every time here.
+* cluster.yml is the primary playbook for kicking an entire cluster, end to end. The included provision.yml will delete the hosts every time, so an easy way to rerun this is by passing --skip-tags delete-hosts to ansible-playbook. It then runs configure.yml and chef.yml to fully configure the cluster hosts and chef it up.
+* reconfigure.yml is designed for reconfiguring a cluster without rekicking the hosts. It will clean all of the chef cruft and Openstack packages on the cluster in a way that lets you cleanly start the chef.yml again. This is handy for if chef failed to configure the cluster completely, mysql is unhappy and your life is hard. Unlike cluster.yml, you'll want to pass --skip-tags delete-hosts every time here.
 
 (TODO: Split delete/ensure into separate roles so these are a little more sane and flexible.)
 
@@ -64,8 +64,14 @@ Roles
 There are several roles tailored to composable sets of functionality. Tasks in each role are also individually tagged for more granular filtering. These include:
 
 * chef-client -- Runs chef-client on cluster nodes
-* provision-hosts -- The primary provisioning role. Deletes/Builds servers.
-
+* chef-roles -- Configures cluster node roles for chef mapping by chef-centric groups
+* chef-setup -- Installs chef-server and does other appropriate needfuls
+* clean-chef-nodes -- Wipes cluster nodes from chef-server's memory
+* clean-chef-server -- Removes chef-server packages and files, kills processes on chef node
+* clean-chef-cluser -- Removes chef packages and files, kills processes on cluster nodes
+* configure-hosts -- Basic post-install groundwork, configures networking and tests it
+* provision-hosts -- Deletes/Builds servers and learns how to talk to them for other roles
+* reboot-cluster -- Reboots the cluster nodes and waits for them to be responsive again
 
 Provisioning
 ---
