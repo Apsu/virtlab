@@ -13,6 +13,26 @@
   roles:
   - {role: chef-client, tags: ['chef-client']}
 
+- name: Update from new repos
+  tags: reboot-cluster
+  hosts: cluster
+  gather_facts: true
+  tasks:
+  - name: Update packages
+    tags: packages
+    yum: name=* state=latest
+    when: ansible_os_family == "RedHat"
+
+- name: Update from new repos
+  tags: reboot-cluster
+  hosts: cluster
+  gather_facts: true
+  tasks:
+  - name: Update packages
+    tags: packages
+    apt: update_cache=yes upgrade=dist
+    when: ansible_os_family == "Debian"
+
 - name: Reboot cluster for base role
   tags: reboot-cluster
   hosts: cluster
