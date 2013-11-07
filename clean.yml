@@ -1,18 +1,21 @@
 ---
-- name: Clean chef server
-  tags: clean-chef-server
-  hosts: chef
-  roles:
-  - {role: clean-chef-server, tags: ['clean-chef-server']}
-
 - name: Clean chef nodes/clients
   tags: clean-chef-nodes
   hosts: chef
+  gather_facts: false
   roles:
   - {role: clean-chef-nodes, tags: ['clean-chef-nodes']}
+
+- name: Clean chef server
+  tags: clean-chef-server
+  hosts: chef
+  gather_facts: false
+  roles:
+  - {role: clean-chef-server, tags: ['clean-chef-server']}
 
 - name: Clean everything else
   tags: clean-cluster
   hosts: cluster
+  gather_facts: false
   roles:
   - {role: clean-cluster, tags: ['clean-cluster']}
