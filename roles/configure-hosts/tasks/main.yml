@@ -55,3 +55,17 @@
   - Down interfaces
   - Up interfaces
   - Ping addresses
+
+- name: Configure network interfaces
+  tags: networks
+  lineinfile:
+    dest: /etc/network/interfaces
+    regexp: ^auto {{item.iface}}
+    insertafter: ^auto {{item.iface}}
+    line: "iface {{item.iface}} inet manual\n    address {{item.ipv4}}\n    netmask {{item.mask}}"
+  when: item.iface in ansible_interfaces and ansible_os_family == "Debian"
+  with_items: ifaces.values()
+  notify:
+  - Down interfaces
+  - Up interfaces
+  - Ping addresses
