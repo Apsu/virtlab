@@ -23,4 +23,7 @@
 
 - name: Fixup ~/.bashrc
   tags: files
-  shell: sed -i '/export PATH=${PATH}:\/opt\/chef-server\/embedded\/bin/d' ~/.bashrc; sed -i '/export OLDPATH/d' ~/.bashrc
+  lineinfile:
+    dest: "{{ansible_env.HOME}}/.bashrc"
+    regexp: "^export PATH"
+    state: absent
