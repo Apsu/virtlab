@@ -23,7 +23,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Save empty ruleset
-  tags: service
+  tags: services
   shell: "{{item}}-save > /etc/sysconfig/{{item}}"
   with_items:
   - iptables
