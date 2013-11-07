@@ -1,0 +1,8 @@
+---
+ifaces:
+  svc:
+    iface: eth2
+    ipv4: 172.20.0.1
+    mask: 255.255.255.0
+  iso:
+    iface: eth3
