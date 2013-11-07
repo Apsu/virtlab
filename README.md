@@ -20,6 +20,29 @@ The provision-hosts role expects a rax_creds file to exist in the base directory
     username = someuser
     api_key = somekey
 
+Inventory (Hosts)
+---
+
+The inventory is currently configured (via ansible.cfg) as a directory in the project root, ./inventory, and contains host_vars, group_vars and the hosts file. The hosts file is a simple collection of hostnames and groups they're in, with the following main structure:
+
+* Local -- Group for local_action targeting
+  * Just contains "localhost" at present
+* Chef -- Group for the single Chef server
+* Infra -- Group for the pair of HA controller nodes
+  * The order of hosts here will dictate controller1/controller2 mapping
+* Compute -- Group for compute nodes
+
+These groups are then collected and divided into two other useful groups for targeting by various roles:
+
+* Hosts -- This contains all hosts for site-wide tasks
+* Cluster -- This contains everything but the chef host, for chef tasks
+
+host_vars/group_vars set a few bits of miscellaneous info, though these are particularly important:
+
+* group_vars/chef.yml -- Configuration for chef server and clients
+* group_vars/hosts.yml -- Configuration for rax module to kick servers
+* host_vars/$host.yml -- Network interface reconfiguration data per host
+
 Workflow Playbooks
 ---
 
@@ -38,11 +61,18 @@ The functional playbooks are provision.yml, configure.yml, clean.yml and chef.ym
 Roles
 ---
 
-There are several roles tailored to composable sets of functionality. Tasks in each role are also individually tagged for more granular filtering.
+There are several roles tailored to composable sets of functionality. Tasks in each role are also individually tagged for more granular filtering. These include:
 
+* chef-client -- Runs chef-client on cluster nodes
+* provision-hosts -- The primary provisioning role. Deletes/Builds servers.
 
 
 Provisioning
 ---
 
-The static inventory provided (inventory/hosts) specifies the hostnames and groups but not their IP addresses, and must discover them. This is currently implemented in the provision-hosts role by first deleting any existing hosts (tag: delete-hosts), then building new ones with the inventory hostnames and registering the public IPv4 addresses for subsequent SSH access (tag: ensure-hosts). It is not necessary to delete hosts every time, as the building process is idempotent, discovering host information if they exist. Either way, ensure-hosts tags must always be run before any other playbooks.
+The static inventory provided specifies the hostnames and groups but not their IP addresses, and must discover them. This is currently implemented in the provision-hosts role by first deleting any existing hosts (tag: delete-hosts), then building new ones with the inventory hostnames and registering the public IPv4 addresses for subsequent SSH access (tag: ensure-hosts). It is not necessary to delete hosts every time, as the building process is idempotent, discovering host information if they exist. Either way, ensure-hosts tags must always be run before any other playbooks.
+
+Errata
+---
+
+Some tasks -- mostly chef tooling and chef-related -- are a little terrible to figure out their current state and decide if running them caused a change or not. Please try to forgive some of the travesties you'll encounter involving abuse of failed_when, changed_when and friends.
