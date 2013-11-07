@@ -1,7 +1,7 @@
 ---
 - name: Reboot servers
   tags: reboot
-  command: /sbin/reboot
+  command: shutdown -r now
 
 - name: Wait for ssh to come back
   tags: reboot
@@ -12,15 +12,3 @@
     port: 22
     state: started
     timeout: 300
-
-#- name: Wait for reboot to complete
-#  tags: reboot
-#  local_action:
-#    module: rax
-#    name: "{{inventory_hostname}}"
-#    credentials: "{{rax_creds}}"
-#    region: "{{rax_region}}"
-#    flavor: "{{rax_flavor}}"
-#    image: "{{rax_image}}"
-#    wait: yes
-#    state: active
