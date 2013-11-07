@@ -39,15 +39,7 @@
   tags: hosts
   host: hostname={{inventory_hostname}} state=absent
  
-- name: Add IPv4 localhost
-  tags: hosts
-  host: hostname=localhost ip=127.0.0.1 state=present
- 
-- name: Add IPv6 localhost
-  tags: hosts
-  host: hostname=localhost6 ip=::1 state=present
- 
-- name: Add cluster hosts
+- name: Add cluster hosts svc nets
   tags: hosts
   host: hostname={{item}} ip={{hostvars[item].ifaces.svc.ipv4}} state=present
   when: "'svc' in hostvars[item].ifaces"
