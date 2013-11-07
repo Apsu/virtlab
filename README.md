@@ -51,8 +51,6 @@ Currently there are two main playbooks combining various functional playbooks fo
 * cluster.yml is the primary playbook for kicking an entire cluster, end to end. The included provision.yml will delete the hosts every time, so an easy way to rerun this is by passing --skip-tags delete-hosts to ansible-playbook. It then runs configure.yml and chef.yml to fully configure the cluster hosts and chef it up.
 * reconfigure.yml is designed for reconfiguring a cluster without rekicking the hosts. It will clean all of the chef cruft and Openstack packages on the cluster in a way that lets you cleanly start the chef.yml again. This is handy for if chef failed to configure the cluster completely, mysql is unhappy and your life is hard. Unlike cluster.yml, you'll want to pass --skip-tags delete-hosts every time here.
 
-(TODO: Split delete/ensure into separate roles so these are a little more sane and flexible.)
-
 Functional Playbooks
 ---
 
@@ -79,6 +77,6 @@ Provisioning
 The static inventory provided specifies the hostnames and groups but not their IP addresses, and must discover them. This is currently implemented in the provision-hosts role by first deleting any existing hosts (tag: delete-hosts), then building new ones with the inventory hostnames and registering the public IPv4 addresses for subsequent SSH access (tag: ensure-hosts). It is not necessary to delete hosts every time, as the building process is idempotent, discovering host information if they exist. Either way, ensure-hosts tags must always be run before any other playbooks.
 
 Errata
----
+===
 
 Some tasks -- mostly chef tooling and chef-related -- are a little terrible to figure out their current state and decide if running them caused a change or not. Please try to forgive some of the travesties you'll encounter involving abuse of failed_when, changed_when and friends.
