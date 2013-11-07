@@ -1,6 +1,7 @@
 ---
 cookbooks_branch: master
 environment_file: havana.json
+chef_server_version: 11.0.8-1
 chef_environment: havana
 chef_runlists:
 - "role[ha-controller1],role[single-network-node]"

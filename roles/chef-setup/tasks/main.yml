@@ -2,27 +2,54 @@
 - name: Install git
   tags: git
   yum: name=git state=present
- 
-- name: Checkout support-tools
+  when: ansible_os_family == "RedHat"
+
+- name: Install git
   tags: git
-  git: repo=https://github.com/Apsu/support-tools dest=support-tools
+  apt: name=git state=present
+  when: ansible_os_family == "Debian"
  
 - name: Install chef server
   tags: chef-server
-  command: ./install-chef-server.sh chdir=support-tools/chef-install
+  command: rpm -Uvh http://www.opscode.com/chef/download-server?p=el&pv={{ansible_lsb.major_release}}&m=x86_64&v={{chef_server_version}}
+  register: output
+  when: ansible_os_family == "RedHat"
+  failed_when: output.rc not in [0,1]
+  changed_when: output.rc == 0
+
+- name: Install chef server
+  tags: chef-server
+  apt: name=http://www.opscode.com/chef/download-server?p=ubuntu&pv={{ansible_lsb.release}}&m=x86_64&v={{chef_server_version}} state=present
+  when: ansible_os_family == "Debian"
+
+- name: Configure chef server
+  tags: chef-server
+  command: chef-server-ctl reconfigure
+
+- name: Configure path for knife
+  tags: chef-server
+  lineinfile:
+    dest: "{{ansible_env.HOME}}/.bashrc"
+    regexp: "^export PATH"
+    line: "export PATH=${PATH}:/opt/chef-server/embedded/bin"
+    state: present
+
+- name: Configure knife
+  tags: chef-server
+  command: knife configure --yes --defaults --server-url https://127.0.0.1:443 --repository chef-cookbooks/cookbooks --user admin --key /etc/chef-server/admin.pem --admin-client-key /etc/chef-server/admin.pem --admin-client-name admin --validation-client-name chef-validator --validation-key /etc/chef-server/chef-validator.pem
  
 - name: Install chef-cookbooks
   tags: 
   - git
   - upload
   - cookbooks
-  git: repo=https://github.com/rcbops/chef-cookbooks dest=chef-cookbooks version={{cookbooks_branch}}
+  git: repo=https://github.com/rcbops/chef-cookbooks dest={{ansible_env.HOME}}/chef-cookbooks version={{cookbooks_branch}}
 
 - name: Upload cookbooks
   tags:
   - upload
   - cookbooks
-  command: knife cookbook upload -o chef-cookbooks/cookbooks -a
+  command: knife cookbook upload -o {{ansible_env.HOME}}/chef-cookbooks/cookbooks -a
 
 - name: Upload roles
   tags:
@@ -40,7 +67,7 @@
   tags:
   - upload
   - environment
-  command: knife environment from_file {{environment_file}}
+  command: knife environment from_file {{ansible_env.HOME}}/{{environment_file}}
  
 - name: Get node list
   tags:
