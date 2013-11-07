@@ -1,12 +1,12 @@
 [chef]
-apsu-cent-chef
+apsu-ha-chef
 
 [infra]
-apsu-cent-infra1
-apsu-cent-infra2
+apsu-ha-infra1
+apsu-ha-infra2
 
 [compute]
-apsu-cent-compute1
+apsu-ha-compute1
 
 [hosts:children]
 chef
