@@ -35,9 +35,9 @@
   service: name=postfix state=stopped enabled=no
   when: ansible_os_family == "RedHat"
 
-- name: Clear /etc/hosts
+- name: Clear existing cluster hosts
   tags: hosts
-  shell: echo -n > /etc/hosts
+  host: hostname={{inventory_hostname}} state=absent
  
 - name: Add IPv4 localhost
   tags: hosts
