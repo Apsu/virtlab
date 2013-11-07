@@ -32,3 +32,12 @@
   set_fact: ansible_ssh_host={{item.accessIPv4}}
   when: item.name == inventory_hostname # Avoid dupes
   with_items: rax.instances
+
+- name: Explicitly gather facts to check platform
+  tags: packages
+  setup: filter=ansible_os_family
+
+- name: Install LSB
+  tags: packages
+  yum: name=redhat-lsb-core state=present
+  when: ansible_os_family == "RedHat"

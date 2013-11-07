@@ -2,6 +2,12 @@
 - name: Clean packages
   tags: packages
   yum: name={{pkg_list}} state=absent
+  when: ansible_os_family == "RedHat"
+
+- name: Clean packages
+  tags: packages
+  apt: name={{pkg_list}} state=absent
+  when: ansible_os_family == "Debian"
 
 - name: Clean processes
   tags: processes

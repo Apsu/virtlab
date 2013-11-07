@@ -2,13 +2,17 @@
 - name: Updating packages
   tags: packages
   yum: name=* state=latest
+  when: ansible_os_family == "RedHat"
 
-- name: Clear iptables
-  tags: services
-  shell: "{{item}}-restore <<< ''"
-  with_items:
-  - iptables
-  - ip6tables
+- name: Install python-apt if missing
+  tags: packages
+  command: apt-get -y install python-apt
+  when: ansible_os_family == "Debian"
+
+- name: Updating packages
+  tags: packages
+  apt: update_cache=yes upgrade=dist
+  when: ansible_os_family == "Debian"
 
 - name: Stop iptables
   tags: services
@@ -16,6 +20,7 @@
   with_items:
   - iptables
   - ip6tables
+  when: ansible_os_family == "RedHat"
 
 - name: Save empty ruleset
   tags: service
@@ -23,10 +28,12 @@
   with_items:
   - iptables
   - ip6tables
+  when: ansible_os_family == "RedHat"
 
 - name: Disable postfix
   tags: services
   service: name=postfix state=stopped enabled=no
+  when: ansible_os_family == "RedHat"
 
 - name: Clear /etc/hosts
   tags: hosts
@@ -49,7 +56,7 @@
 - name: Configure network interfaces
   tags: networks
   template: src=ifcfg.j2 dest=/etc/sysconfig/network-scripts/ifcfg-{{item.iface}}
-  when: item.iface in ansible_interfaces
+  when: item.iface in ansible_interfaces and ansible_os_family == "RedHat"
   with_items: ifaces.values()
   changed_when: True
   notify:
