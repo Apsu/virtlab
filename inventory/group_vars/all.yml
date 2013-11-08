@@ -1,0 +1,41 @@
+---
+# Force python2 for targets with /usr/bin/python = python3
+ansible_python_interpreter: /usr/bin/python2
+
+# pyrax format creds file
+rax_creds: rax_creds
+
+# Datacenter region
+rax_region: IAD
+
+# The keypair must already exist
+rax_keypair: evan
+
+# -- Flavors --
+# RAM: 4096MB, Disk: 160GB, Ephemeral: 0, Swap: 2048MB, VCPUs: 2, RXTX Factor: 10.0
+#rax_flavor: 5
+
+# RAM: 4096MB, Disk: 40GB (SSD), Ephemeral: 40GB, Swap: 0, VCPUS: 4, RXTX Factor: 800.0
+rax_flavor: performance1-4
+
+# -- Images --
+# CentOS 6.4
+#rax_image: f70ed7c7-b42e-4d77-83d8-40fa29825b85
+# Ubuntu Precise 12.04.3
+rax_image: c3153cde-2d23-4186-b7da-159adbe2858b
+
+# Manual for the fastness
+rax_diskconfig: manual
+
+# Cloud Networks to attach
+rax_net_labels:
+- public
+- private
+# CS/pyrax seems to add isolated networks in reverse order, so you're welcome
+- apsu-ha-iso
+- apsu-ha-svc
+
+# Cloud networks to ensure
+rax_net_info:
+- {label: apsu-ha-iso, cidr: 172.20.1.0/24}
+- {label: apsu-ha-svc, cidr: 172.20.0.0/24}
