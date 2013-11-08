@@ -1,0 +1,11 @@
+---
+- name: Delete cloud networks if they exist
+  tags: delete
+  local_action:
+    module: rax_network
+    credentials: "{{rax_creds}}"
+    region: "{{rax_region}}"
+    label: "{{item.label}}"
+    cidr: "{{item.cidr}}"
+    state: absent
+  with_items: rax_net_info

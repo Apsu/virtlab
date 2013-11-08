@@ -1,7 +1,14 @@
 ---
+- name: Ensure networks
+  tags: ensure-networks
+  hosts: local
+  gather_facts: false
+  roles:
+  - {role: ensure-networks, tags: ['ensure-networks']}
+
 - name: Ensure hosts
   tags: ensure-hosts
   hosts: hosts
   gather_facts: false
   roles:
-  - { role: ensure-hosts, tags: ['ensure-hosts']}
+  - {role: ensure-hosts, tags: ['ensure-hosts']}

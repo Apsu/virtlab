@@ -1,0 +1,11 @@
+---
+- name: Ensure networks exist
+  tags: ensure
+  local_action:
+    module: rax_network
+    credentials: "{{rax_creds}}"
+    region: "{{rax_region}}"
+    label: "{{item.label}}"
+    cidr: "{{item.cidr}}"
+    state: present
+  with_items: rax_net_info

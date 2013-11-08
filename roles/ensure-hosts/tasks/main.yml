@@ -6,13 +6,13 @@
     name: "{{inventory_hostname}}"
     credentials: "{{rax_creds}}"
     key_name: "{{rax_keypair}}"
-    networks: "{{rax_networks}}"
+    networks: "{{rax_net_labels}}"
     region: "{{rax_region}}"
     flavor: "{{rax_flavor}}"
     image: "{{rax_image}}"
     disk_config: "{{rax_diskconfig}}"
     wait: yes
-    state: active
+    state: present
   register: rax
 
 - name: Store host access IPs

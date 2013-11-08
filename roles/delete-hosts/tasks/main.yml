@@ -5,6 +5,8 @@
     module: rax
     name: "{{inventory_hostname}}"
     credentials: "{{rax_creds}}"
+    key_name: "{{rax_keypair}}"
+    networks: "{{rax_net_labels}}"
     region: "{{rax_region}}"
     flavor: "{{rax_flavor}}"
     image: "{{rax_image}}"
