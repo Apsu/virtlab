@@ -1,0 +1,12 @@
+---
+- name: Delete hosts if they exist
+  tags: delete
+  local_action:
+    module: rax
+    name: "{{inventory_hostname}}"
+    credentials: "{{rax_creds}}"
+    region: "{{rax_region}}"
+    flavor: "{{rax_flavor}}"
+    image: "{{rax_image}}"
+    wait: yes
+    state: absent

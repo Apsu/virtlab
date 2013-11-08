@@ -1,7 +1,0 @@
----
-- name: Provision hosts
-  tags: provision-hosts
-  hosts: hosts
-  gather_facts: false
-  roles:
-  - { role: provision-hosts, tags: ['provision-hosts']}

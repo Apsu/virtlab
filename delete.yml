@@ -1,0 +1,7 @@
+---
+- name: Delete hosts
+  tags: delete-hosts
+  hosts: hosts
+  gather_facts: false
+  roles:
+  - { role: delete-hosts, tags: ['delete-hosts']}

@@ -1,0 +1,7 @@
+---
+- name: Ensure hosts
+  tags: ensure-hosts
+  hosts: hosts
+  gather_facts: false
+  roles:
+  - { role: ensure-hosts, tags: ['ensure-hosts']}

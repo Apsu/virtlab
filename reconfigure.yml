@@ -1,4 +1,4 @@
 ---
-- include: provision.yml
+- include: ensure.yml
 - include: clean.yml
 - include: chef.yml
