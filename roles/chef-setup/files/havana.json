@@ -10,7 +10,7 @@
     "override_attributes": {
         "openssh": {
             "server": {
-                "subsystem": "sftp /usr/libexec/openssh/sftp-server"
+                "subsystem": "sftp internal-sftp"
             }
         },
         "monitoring": {

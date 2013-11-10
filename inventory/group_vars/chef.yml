@@ -1,6 +1,6 @@
 ---
-cookbooks_repo: https://github.com/rcbops/chef-cookbooks
-cookbooks_branch: v4.2.0rc
+cookbooks_repo: "{{lookup('env', 'ANSIBLE_GIT_REPO')}}"
+cookbooks_branch: "{{lookup('env', 'ANSIBLE_GIT_BRANCH')}}"
 environment_file: havana.json
 chef_server_version: 11.0.8-1
 chef_environment: havana

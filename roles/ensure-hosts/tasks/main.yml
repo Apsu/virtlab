@@ -30,22 +30,6 @@
   yum: name=redhat-lsb-core state=present
   when: ansible_os_family == "RedHat"
 
-- name: Check package manager
-  tags: packages
-  setup: filter=ansible_pkg_mgr
- 
-- name: Install python-keyczar
-  tags: packages
-  action: "{{ansible_pkg_mgr}} name=python-keyczar state=present"
-
-- name: Clear ruleset
-  tags: services
-  shell: "{{item}}-restore < /dev/null"
-  with_items:
-  - iptables
-  - ip6tables
-  when: ansible_os_family == "RedHat"
-
 - name: Stop iptables
   tags: services
   service: name={{item}} state=stopped enabled=no

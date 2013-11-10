@@ -10,8 +10,9 @@
   with_items: ifaces.values()
 
 - name: Ping addresses
-  command: ping -c 3 -q {{item.ipv4}}
+  command: ping -c 1 -q {{hostvars[item].ifaces.svc.ipv4}}
   register: output
-  when: item.iface in ansible_interfaces and item.ipv4 is defined
-  with_items: ifaces.values()
-  changed_when: output.rc != 0
+  when: "hostvars[item].ifaces.svc.iface in ansible_interfaces and hostvars[item].ifaces.svc.ipv4 is defined"
+  with_items: groups.hosts
+  changed_when: False # Never changed
+  failed_when: output.rc != 0
