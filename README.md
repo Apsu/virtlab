@@ -1,4 +1,4 @@
-[![Build Status](http://jenkins.propter.net:8080/job/ansible/badge/icon)](http://jenkins.propter.net:8080/job/ansible)
+[![Build Status](http://jenkins.propter.net:8080/job/ansible/badge/icon)](http://jenkins.propter.net:8080/job/ansible/)
 
 Description
 ===
