@@ -5,7 +5,7 @@
     module: rax
     name: "{{inventory_hostname}}"
     credentials: "{{rax_creds}}"
-    key_name: "{{rax_keypair}}"
+    keypair: "{{rax_keypair}}"
     networks: "{{rax_net_labels}}"
     region: "{{rax_region}}"
     flavor: "{{rax_flavor}}"
@@ -21,11 +21,43 @@
   when: item.name == inventory_hostname # Avoid dupes
   with_items: rax.instances
 
-- name: Explicitly gather facts to check platform
+- name: Check platform
   tags: packages
   setup: filter=ansible_os_family
 
 - name: Install LSB
   tags: packages
   yum: name=redhat-lsb-core state=present
+  when: ansible_os_family == "RedHat"
+
+- name: Check package manager
+  tags: packages
+  setup: filter=ansible_pkg_mgr
+ 
+- name: Install python-keyczar
+  tags: packages
+  action: "{{ansible_pkg_mgr}} name=python-keyczar state=present"
+
+- name: Clear ruleset
+  tags: services
+  shell: "{{item}}-restore < /dev/null"
+  with_items:
+  - iptables
+  - ip6tables
+  when: ansible_os_family == "RedHat"
+
+- name: Stop iptables
+  tags: services
+  service: name={{item}} state=stopped enabled=no
+  with_items:
+  - iptables
+  - ip6tables
+  when: ansible_os_family == "RedHat"
+
+- name: Save empty ruleset
+  tags: services
+  shell: "{{item}}-save > /etc/sysconfig/{{item}}"
+  with_items:
+  - iptables
+  - ip6tables
   when: ansible_os_family == "RedHat"

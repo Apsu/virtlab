@@ -1,22 +1,22 @@
 ---
-- name: Clean packages
+- name: Cleanup packages
   tags: packages
   yum: name={{pkg_list}} state=absent
   when: ansible_os_family == "RedHat"
 
-- name: Clean packages
+- name: Cleanup packages
   tags: packages
   apt: name={{pkg_list}} state=absent
   when: ansible_os_family == "Debian"
 
-- name: Clean processes
+- name: Cleanup processes
   tags: processes
   command: pkill -9 -f "({{proc_list|join('|')}})"
   register: result
   changed_when: result.rc == 0
   failed_when: result.rc not in [0,1]
 
-- name: Clean files
+- name: Cleanup files
   tags: files
   shell: rm -rf {{item}}
   with_items: file_list

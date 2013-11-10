@@ -19,7 +19,7 @@
 
 - name: Clean files
   tags: files
-  shell: rm -rf /etc/chef-server /etc/chef /opt/chef-server /opt/chef ~/.chef /var/opt/chef-server/ /var/chef /var/log/chef-server/ ~/chef-server-cleanse* ~/validation.pem
+  shell: rm -rf /etc/chef-server /etc/chef /opt/chef-server /opt/chef ~/.chef ~/chef-cookbooks /var/opt/chef-server/ /var/chef /var/log/chef-server/ ~/chef-server-cleanse* ~/validation.pem
 
 - name: Fixup ~/.bashrc
   tags: files

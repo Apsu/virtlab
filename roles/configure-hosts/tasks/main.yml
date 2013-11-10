@@ -1,4 +1,22 @@
 ---
+- name: Setup .ssh
+  tags: keys
+  file: dest={{ansible_env.HOME}}/.ssh mode=0700 state=directory
+ 
+- name: Upload SSH keys
+  tags: keys
+  copy: src={{item|basename}} dest={{ansible_env.HOME}}/.ssh/{{item|basename}} mode=0600
+  with_fileglob: id_*
+ 
+- name: Trust keys
+  tags: keys
+  lineinfile:
+    dest: "{{ansible_env.HOME}}/.ssh/authorized_keys"
+    regexp: "^ssh-rsa.*root@ansible"
+    line: "{{lookup('file', item)}}"
+    state: present
+  with_fileglob: id_*.pub
+
 - name: Updating packages
   tags: packages
   yum: name=* state=latest
@@ -14,22 +32,6 @@
   apt: update_cache=yes upgrade=dist
   when: ansible_os_family == "Debian"
 
-- name: Stop iptables
-  tags: services
-  service: name={{item}} state=stopped enabled=no
-  with_items:
-  - iptables
-  - ip6tables
-  when: ansible_os_family == "RedHat"
-
-- name: Save empty ruleset
-  tags: services
-  shell: "{{item}}-save > /etc/sysconfig/{{item}}"
-  with_items:
-  - iptables
-  - ip6tables
-  when: ansible_os_family == "RedHat"
-
 - name: Disable postfix
   tags: services
   service: name=postfix state=stopped enabled=no
@@ -38,6 +40,10 @@
 - name: Clear existing cluster hosts
   tags: hosts
   host: hostname={{inventory_hostname}} state=absent
+  register: result
+  until: not result.changed
+  retries: 10
+  delay: 0
  
 - name: Add cluster hosts svc nets
   tags: hosts

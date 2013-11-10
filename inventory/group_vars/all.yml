@@ -1,6 +1,6 @@
 ---
-# Force python2 for targets with /usr/bin/python = python3
-ansible_python_interpreter: /usr/bin/python2
+# Root ahoy!
+ansible_ssh_user: root
 
 # pyrax format creds file
 rax_creds: rax_creds
@@ -20,9 +20,9 @@ rax_flavor: performance1-4
 
 # -- Images --
 # CentOS 6.4
-#rax_image: f70ed7c7-b42e-4d77-83d8-40fa29825b85
+rax_image: f70ed7c7-b42e-4d77-83d8-40fa29825b85
 # Ubuntu Precise 12.04.3
-rax_image: c3153cde-2d23-4186-b7da-159adbe2858b
+#rax_image: c3153cde-2d23-4186-b7da-159adbe2858b
 
 # Manual for the fastness
 rax_diskconfig: manual

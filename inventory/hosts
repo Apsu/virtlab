@@ -18,4 +18,4 @@ infra
 compute
 
 [local]
-local
+localhost

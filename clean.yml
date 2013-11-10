@@ -9,7 +9,7 @@
 - name: Clean chef server
   tags: clean-chef-server
   hosts: chef
-  gather_facts: false
+  gather_facts: true
   roles:
   - {role: clean-chef-server, tags: ['clean-chef-server']}
 

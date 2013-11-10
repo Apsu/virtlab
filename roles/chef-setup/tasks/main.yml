@@ -34,22 +34,22 @@
     line: "export PATH=${PATH}:/opt/chef-server/embedded/bin"
     state: present
 
-- name: Configure knife
-  tags: chef-server
-  command: knife configure --yes --defaults --server-url https://127.0.0.1:443 --repository chef-cookbooks/cookbooks --user admin --key /etc/chef-server/admin.pem --admin-client-key /etc/chef-server/admin.pem --admin-client-name admin --validation-client-name chef-validator --validation-key /etc/chef-server/chef-validator.pem
- 
-- name: Install chef-cookbooks
+- name: Clone chef-cookbooks
   tags: 
   - git
   - upload
   - cookbooks
-  git: repo=https://github.com/rcbops/chef-cookbooks dest={{ansible_env.HOME}}/chef-cookbooks version={{cookbooks_branch}}
+  git: repo={{cookbooks_repo}} dest={{ansible_env.HOME}}/chef-cookbooks version={{cookbooks_branch}}
+
+- name: Configure knife
+  tags: chef-server
+  command: knife configure --yes --defaults --server-url https://127.0.0.1:443 --repository chef-cookbooks/cookbooks --user admin --key /etc/chef-server/admin.pem --admin-client-key /etc/chef-server/admin.pem --admin-client-name admin --validation-client-name chef-validator --validation-key /etc/chef-server/chef-validator.pem chdir={{ansible_env.HOME}}
 
 - name: Upload cookbooks
   tags:
   - upload
   - cookbooks
-  command: knife cookbook upload -o {{ansible_env.HOME}}/chef-cookbooks/cookbooks -a
+  command: knife cookbook upload -o chef-cookbooks/cookbooks -a
 
 - name: Upload roles
   tags:
@@ -67,7 +67,7 @@
   tags:
   - upload
   - environment
-  command: knife environment from_file {{ansible_env.HOME}}/{{environment_file}}
+  shell: knife environment from_file {{environment_file}}
  
 - name: Get node list
   tags:
