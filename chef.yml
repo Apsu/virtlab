@@ -2,47 +2,53 @@
 - name: Setup chef server/clients
   tags: chef-setup
   hosts: chef
+  accelerate: true
   gather_facts: true
   roles:
   - {role: chef-setup, tags: ['chef-setup']}
 
-- name: Run chef client for base role
-  tags: reboot-cluster
-  hosts: cluster
-  gather_facts: false
-  roles:
-  - {role: chef-client, tags: ['chef-client']}
-
-- name: Update from new repos
-  tags: reboot-cluster
-  hosts: cluster
-  gather_facts: true
-  tasks:
-  - name: Update packages
-    tags: packages
-    yum: name=* state=latest
-    when: ansible_os_family == "RedHat"
-
-- name: Update from new repos
-  tags: reboot-cluster
-  hosts: cluster
-  gather_facts: true
-  tasks:
-  - name: Update packages
-    tags: packages
-    apt: update_cache=yes upgrade=dist
-    when: ansible_os_family == "Debian"
-
-- name: Reboot cluster for base role
-  tags: reboot-cluster
-  hosts: cluster
-  gather_facts: false
-  roles:
-  - {role: reboot-cluster, tags: ['reboot-cluster']}
+#- name: Run chef client for base role
+#  tags: reboot-cluster
+#  hosts: cluster
+#  accelerate: true
+#  gather_facts: false
+#  roles:
+#  - {role: chef-client, tags: ['chef-client']}
+#
+#- name: Update from new repos
+#  tags: reboot-cluster
+#  hosts: cluster
+#  accelerate: true
+#  gather_facts: true
+#  tasks:
+#  - name: Update packages
+#    tags: packages
+#    yum: name=* state=latest
+#    when: ansible_os_family == "RedHat"
+#
+#- name: Update from new repos
+#  tags: reboot-cluster
+#  hosts: cluster
+#  accelerate: true
+#  gather_facts: true
+#  tasks:
+#  - name: Update packages
+#    tags: packages
+#    apt: update_cache=yes upgrade=dist
+#    when: ansible_os_family == "Debian"
+#
+#- name: Reboot cluster for base role
+#  tags: reboot-cluster
+#  hosts: cluster
+#  accelerate: true
+#  gather_facts: false
+#  roles:
+#  - {role: reboot-cluster, tags: ['reboot-cluster']}
 
 - name: Setup chef roles
   tags: chef-roles
   hosts: chef
+  accelerate: true
   gather_facts: false
   roles:
   - {role: chef-roles, tags: ['chef-roles']}
@@ -52,6 +58,7 @@
   - chef-client
   - chef-infra1
   hosts: infra[0]
+  accelerate: true
   gather_facts: false
   roles:
   - {role: chef-client, tags: ['chef-client']}
@@ -61,6 +68,7 @@
   - chef-client
   - chef-infra2
   hosts: infra[1]
+  accelerate: true
   gather_facts: false
   roles:
   - {role: chef-client, tags: ['chef-client']}
@@ -70,6 +78,7 @@
   - chef-client
   - chef-infra1-2
   hosts: infra[0]
+  accelerate: true
   gather_facts: false
   roles:
   - {role: chef-client, tags: ['chef-client']}
@@ -79,6 +88,7 @@
   - chef-client
   - chef-compute
   hosts: compute
+  accelerate: true
   gather_facts: false
   roles:
   - {role: chef-client, tags: ['chef-client']}
