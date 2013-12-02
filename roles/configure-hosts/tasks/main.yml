@@ -2,19 +2,19 @@
 - name: Setup .ssh
   tags: keys
   file: dest={{ansible_env.HOME}}/.ssh mode=0700 state=directory
- 
+
 - name: Upload SSH keys
   tags: keys
   copy: src={{item|basename}} dest={{ansible_env.HOME}}/.ssh/{{item|basename}} mode=0600
   with_fileglob: id_*
- 
+
+- name: Clear trusted keys
+  tags: keys
+  shell: echo > {{ansible_env.HOME}}/.ssh/authorized_keys
+
 - name: Trust keys
   tags: keys
-  lineinfile:
-    dest: "{{ansible_env.HOME}}/.ssh/authorized_keys"
-    regexp: "^ssh-rsa.*root@ansible"
-    line: "{{lookup('file', item)}}"
-    state: present
+  shell: cat {{ansible_env.HOME}}/.ssh/{{item|basename}} >> {{ansible_env.HOME}}/.ssh/authorized_keys
   with_fileglob: id_*.pub
 
 - name: Updating packages
@@ -32,10 +32,10 @@
   apt: update_cache=yes upgrade=dist
   when: ansible_os_family == "Debian"
 
-- name: Disable postfix
-  tags: services
-  service: name=postfix state=stopped enabled=no
-  when: ansible_os_family == "RedHat"
+#- name: Disable postfix
+#  tags: services
+#  service: name=postfix state=stopped enabled=no
+#  when: ansible_os_family == "RedHat"
 
 - name: Clear existing cluster hosts
   tags: hosts
@@ -44,13 +44,13 @@
   until: not result.changed
   retries: 10
   delay: 0
- 
+
 - name: Add cluster hosts svc nets
   tags: hosts
   host: hostname={{item}} ip={{hostvars[item].ifaces.svc.ipv4}} state=present
   when: "'svc' in hostvars[item].ifaces"
   with_items: groups.hosts
- 
+
 - name: Configure network interfaces
   tags: networks
   template: src=ifcfg.j2 dest=/etc/sysconfig/network-scripts/ifcfg-{{item.iface}}
@@ -59,19 +59,17 @@
   changed_when: True
   notify:
   - Down interfaces
+  - Flush interfaces
   - Up interfaces
   - Ping addresses
 
 - name: Configure network interfaces
   tags: networks
-  lineinfile:
-    dest: /etc/network/interfaces
-    regexp: ^auto {{item.iface}}
-    insertafter: ^auto {{item.iface}}
-    line: "iface {{item.iface}} inet manual\n    address {{item.ipv4}}\n    netmask {{item.mask}}"
+  interfaces: name={{item.iface}} state=present addr_family=inet {% if 'ipv4' in item %}iface_type=static address={{item.ipv4}} netmask={{item.mask}}{% else %}iface_type=manual updown='up ip link set $IFACE up','down ip link set $IFACE down'{% endif %}
   when: item.iface in ansible_interfaces and ansible_os_family == "Debian"
   with_items: ifaces.values()
   notify:
   - Down interfaces
+  - Flush interfaces
   - Up interfaces
   - Ping addresses
