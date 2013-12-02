@@ -14,7 +14,11 @@ rax_keypair: jenkins
 # -- Images --
 rax_images:
   # CentOS 6.4
-  Centos: f70ed7c7-b42e-4d77-83d8-40fa29825b85
+  #Centos: f70ed7c7-b42e-4d77-83d8-40fa29825b85
+  # CentOS 6.4 with RDO kernel
+  #Centos: 13ab844d-20ca-4988-96bd-cf2317725e74
+  #Centos 6.5
+  Centos: 9816a0ca-e526-43ec-a59b-4e08863647b3
   # Ubuntu Precise 12.04.3
   Ubuntu: c3153cde-2d23-4186-b7da-159adbe2858b
 
@@ -28,10 +32,12 @@ rax_diskconfig: manual
 rax_net_labels:
 - public
 - private
-- jenkins-{{lookup('env', 'BUILD_NUMBER')}}
+- "{{lookup('env', 'BUILD_PREFIX')}}-{{lookup('env', 'BUILD_NUMBER')}}-svc"
+- "{{lookup('env', 'BUILD_PREFIX')}}-{{lookup('env', 'BUILD_NUMBER')}}-iso"
 
 # Cloud networks to ensure
 rax_net_info:
--
-  label: jenkins-{{lookup('env', 'BUILD_NUMBER')}}
+- label: "{{lookup('env', 'BUILD_PREFIX')}}-{{lookup('env', 'BUILD_NUMBER')}}-svc"
   cidr: 172.20.0.0/24
+- label: "{{lookup('env', 'BUILD_PREFIX')}}-{{lookup('env', 'BUILD_NUMBER')}}-iso"
+  cidr: 172.30.0.0/24

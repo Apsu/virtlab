@@ -5,7 +5,7 @@
   connection: local
   gather_facts: false
   vars:
-    prefix: "{{lookup('env', 'BUILD_TAG')}}"
+    prefix: "{{lookup('env', 'BUILD_PREFIX')}}-{{lookup('env', 'BUILD_NUMBER')}}"
   tasks:
   - name: Add chef host
     add_host:
@@ -17,6 +17,8 @@
           iface: eth2
           ipv4: 172.20.0.1
           mask: 255.255.255.0
+        iso:
+          iface: eth3
   - name: Add first infra host
     add_host:
       name: "{{prefix}}-infra1"
@@ -27,6 +29,8 @@
           iface: eth2
           ipv4: 172.20.0.2
           mask: 255.255.255.0
+        iso:
+          iface: eth3
   - name: Add second infra host
     add_host:
       name: "{{prefix}}-infra2"
@@ -37,6 +41,8 @@
           iface: eth2
           ipv4: 172.20.0.3
           mask: 255.255.255.0
+        iso:
+          iface: eth3
   - name: Add compute host
     add_host:
       name: "{{prefix}}-compute1"
@@ -47,3 +53,5 @@
           iface: eth2
           ipv4: 172.20.0.4
           mask: 255.255.255.0
+        iso:
+          iface: eth3
