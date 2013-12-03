@@ -55,7 +55,9 @@ Currently there are two main playbooks combining various functional playbooks fo
 Functional Playbooks
 ---
 
-The functional playbooks are `ensure.yml`, `delete.yml`, `configure.yml`, `clean.yml` and `chef.yml`. Each of the included plays are tagged by function and apply their tags to the roles they include for useful filtering.
+The functional playbooks are `jenkins.yml`, `ensure.yml`, `delete.yml`, `configure.yml`, `clean.yml` and `chef.yml`. Each of the included plays are tagged by function and apply their tags to the roles they include for useful filtering.
+
+As mentioned previously, `jenkins.yml` provides dynamic hostname/network generation for consumption by subsequent playbooks.
 
 Roles
 ---
