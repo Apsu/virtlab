@@ -17,9 +17,14 @@
   failed_when: output.rc not in [0,1]
   changed_when: output.rc == 0
 
+- name: Download chef server package
+  tags: chef-server
+  get_url: url=http://www.opscode.com/chef/download-server?p=ubuntu&pv={{ansible_lsb.release}}&m=x86_64&v={{chef_server_version}} dest={{ansible_env.HOME}}/chef-server.deb
+  when: ansible_os_family == "Debian"
+
 - name: Install chef server
   tags: chef-server
-  apt: name=http://www.opscode.com/chef/download-server?p=ubuntu&pv={{ansible_lsb.release}}&m=x86_64&v={{chef_server_version}} state=present
+  command: dpkg -i {{ansible_env.HOME}}/chef-server.deb
   when: ansible_os_family == "Debian"
 
 - name: Configure chef server
@@ -28,11 +33,10 @@
 
 - name: Configure path for knife
   tags: chef-server
-  lineinfile:
-    dest: "{{ansible_env.HOME}}/.bashrc"
-    regexp: "^export PATH"
-    line: "export PATH=${PATH}:/opt/chef-server/embedded/bin"
-    state: present
+  file:
+    src: /opt/chef-server/embedded/bin/knife
+    dest: /usr/local/bin/knife
+    state: link
 
 - name: Clone chef-cookbooks
   tags: 
@@ -43,19 +47,19 @@
 
 - name: Configure knife
   tags: chef-server
-  command: knife configure --yes --defaults --server-url https://127.0.0.1:443 --repository chef-cookbooks/cookbooks --user admin --key /etc/chef-server/admin.pem --admin-client-key /etc/chef-server/admin.pem --admin-client-name admin --validation-client-name chef-validator --validation-key /etc/chef-server/chef-validator.pem chdir={{ansible_env.HOME}}
+  command: knife configure --yes --defaults --server-url https://127.0.0.1:443 --repository {{ansible_env.HOME}}/chef-cookbooks --user admin --key /etc/chef-server/admin.pem --admin-client-key /etc/chef-server/admin.pem --admin-client-name admin --validation-client-name chef-validator --validation-key /etc/chef-server/chef-validator.pem
 
 - name: Upload cookbooks
   tags:
   - upload
   - cookbooks
-  command: knife cookbook upload -o chef-cookbooks/cookbooks -a
+  command: knife cookbook upload -a
 
 - name: Upload roles
   tags:
   - upload
   - roles
-  shell: knife role from_file chef-cookbooks/roles/*.rb
+  shell: chdir={{ansible_env.HOME}} knife role from_file chef-cookbooks/roles/*.rb
  
 - name: Copy environment file
   tags:
@@ -67,7 +71,7 @@
   tags:
   - upload
   - environment
-  shell: knife environment from_file {{environment_file}}
+  command: knife environment from_file {{environment_file}} chdir={{ansible_env.HOME}}
  
 - name: Get node list
   tags:
@@ -118,10 +122,10 @@
   delay: 10
   changed_when: output.stdout != ""
 
-- name: Add base role
-  tags:
-  - nodes
-  - runlist
-  command: knife node run_list add {{item}} "role[base]"
-  with_items: groups.cluster
-  changed_when: False
+#- name: Add base role
+#  tags:
+#  - nodes
+#  - runlist
+#  command: knife node run_list add {{item}} "role[base]"
+#  with_items: groups.cluster
+#  changed_when: False
