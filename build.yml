@@ -1,5 +1,4 @@
 ---
-- include: jenkins.yml
 - include: ensure.yml
 - include: configure.yml
 - include: chef.yml
