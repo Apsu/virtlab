@@ -1,3 +1,4 @@
 rax_creds
 .venv
 library
+roles/*/files/id_*
