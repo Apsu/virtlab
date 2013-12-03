@@ -17,9 +17,27 @@
 
 - name: Store host access IPs
   tags: ensure
-  set_fact: ansible_ssh_host={{item.accessIPv4}}
+  set_fact: ansible_ssh_host={{item.accessIPv4}} networks={{item.rax_networks}}
   when: item.name == inventory_hostname # Avoid dupes
   with_items: rax.instances
+
+# TOOD: Update host ifaces facts based on discovered interface configs
+#- name: Check interfaces
+#  tags: networks
+#  setup: filter=ansible_interfaces,ansible_eth*
+#
+#- name:
+
+- name: Check package manager
+  tags: packages
+  setup: filter=ansible_pkg_mgr
+
+- name: Install python-keyczar
+  tags: packages
+  action:
+    module: "{{ansible_pkg_mgr}}"
+    name: python-keyczar
+    state: present
 
 - name: Check platform
   tags: packages
