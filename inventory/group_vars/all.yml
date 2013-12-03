@@ -1,5 +1,7 @@
 ---
+# Replace with python 2.x more explicitly
 ansible_python_interpreter: /usr/bin/python2
+
 # Root ahoy!
 ansible_ssh_user: root
 
@@ -16,8 +18,6 @@ rax_keypair: jenkins
 rax_images:
   # CentOS 6.4
   #Centos: f70ed7c7-b42e-4d77-83d8-40fa29825b85
-  # CentOS 6.4 with RDO kernel
-  #Centos: 13ab844d-20ca-4988-96bd-cf2317725e74
   #Centos 6.5
   Centos: 9816a0ca-e526-43ec-a59b-4e08863647b3
   # Ubuntu Precise 12.04.3
