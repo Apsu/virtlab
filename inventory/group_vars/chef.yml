@@ -1,9 +1,9 @@
 ---
 cookbooks_repo: "{{lookup('env', 'ANSIBLE_GIT_REPO')}}"
 cookbooks_branch: "{{lookup('env', 'ANSIBLE_GIT_BRANCH')}}"
-environment_file: havana.json
+environment_file: "{{lookup('env', 'ANSIBLE_OS_RELEASE')}}.json"
 chef_server_version: 11.0.8-1
-chef_environment: havana
+chef_environment: "{{lookup('env', 'ANSIBLE_OS_RELEASE')}}"
 chef_runlists:
 - "role[ha-controller1],role[single-network-node]"
 - "role[ha-controller2],role[single-network-node]"
