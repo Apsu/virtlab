@@ -36,8 +36,8 @@
                 "network_type": "gre",
                 "provider_networks": [
                     {
-                        "label": "ph-10g",
-                        "bridge": "br-10g",
+                        "label": "ph-prov",
+                        "bridge": "br-prov",
                         "vlans": "1:1000"
                     }
                 ]
@@ -45,32 +45,40 @@
         },
         "vips": {
             "rabbitmq-queue": "172.20.0.200",
-            "horizon-dash": "172.20.0.201",
-            "neutron-api": "172.20.0.201",
-            "horizon-dash_ssl": "172.20.0.201",
-            "keystone-service-api": "172.20.0.201",
-            "keystone-admin-api": "172.20.0.201",
-            "keystone-internal-api": "172.20.0.201",
-            "nova-xvpvnc-proxy": "172.20.0.201",
-            "nova-api": "172.20.0.201",
-            "nova-ec2-public": "172.20.0.201",
-            "nova-novnc-proxy": "172.20.0.201",
+
+            "ceilometer-api": "172.20.0.201",
+            "ceilometer-central-agent": "172.20.0.201",
             "cinder-api": "172.20.0.201",
             "glance-api": "172.20.0.201",
             "glance-registry": "172.20.0.201",
+            "heat-api": "172.20.0.201",
+            "heat-api-cfn": "172.20.0.201",
+            "heat-api-cloudwatch": "172.20.0.201",
+            "horizon-dash": "172.20.0.201",
+            "horizon-dash_ssl": "172.20.0.201",
+            "keystone-admin-api": "172.20.0.201",
+            "keystone-internal-api": "172.20.0.201",
+            "keystone-service-api": "172.20.0.201",
+            "neutron-api": "172.20.0.201",
+            "nova-api": "172.20.0.201",
+            "nova-ec2-public": "172.20.0.201",
+            "nova-novnc-proxy": "172.20.0.201",
+            "nova-xvpvnc-proxy": "172.20.0.201",
             "swift-proxy": "172.20.0.201",
+
             "mysql-db": "172.20.0.202",
+
             "config": {
                 "172.20.0.200": {
-                    "vrid": 11,
+                    "vrid": 10,
                     "network": "public"
                 },
                 "172.20.0.201": {
-                    "vrid": 12,
+                    "vrid": 11,
                     "network": "public"
                 },
                 "172.20.0.202": {
-                    "vrid": 10,
+                    "vrid": 12,
                     "network": "public"
                 }
             }
