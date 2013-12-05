@@ -47,8 +47,6 @@
         "vips": {
             "rabbitmq-queue": "172.20.0.200",
 
-            "ceilometer-api": "172.20.0.201",
-            "ceilometer-central-agent": "172.20.0.201",
             "cinder-api": "172.20.0.201",
             "glance-api": "172.20.0.201",
             "glance-registry": "172.20.0.201",
