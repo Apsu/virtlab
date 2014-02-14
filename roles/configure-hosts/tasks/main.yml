@@ -3,19 +3,24 @@
   tags: keys
   file: dest={{ansible_env.HOME}}/.ssh mode=0700 state=directory
 
+- name: Clear trusted keys
+  tags: keys
+  shell: echo > {{ansible_env.HOME}}/.ssh/authorized_keys
+
 - name: Upload SSH keys
   tags: keys
   copy: src={{item|basename}} dest={{ansible_env.HOME}}/.ssh/{{item|basename}} mode=0600
   with_fileglob: id_*
 
-- name: Clear trusted keys
-  tags: keys
-  shell: echo > {{ansible_env.HOME}}/.ssh/authorized_keys
-
 - name: Trust keys
   tags: keys
   shell: cat {{ansible_env.HOME}}/.ssh/{{item|basename}} >> {{ansible_env.HOME}}/.ssh/authorized_keys
   with_fileglob: id_*.pub
+
+#- name: Authorize SSH keys
+#  tags: keys
+#  authorized_key: key="{{lookup('file', item|basename)}}" user=root state=present
+#  with_fileglob: id_*.pub
 
 - name: Updating packages
   tags: packages

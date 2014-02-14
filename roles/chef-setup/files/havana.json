@@ -41,6 +41,9 @@
                         "vlans": "1:1000"
                     }
                 ]
+            },
+            "lbaas": {
+              "enabled": true
             }
         },
         "vips": {

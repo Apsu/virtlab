@@ -47,7 +47,7 @@
     add_host:
       name: "{{prefix}}-compute1"
       groups: hosts, cluster, compute
-      rax_flavor: performance1-1
+      rax_flavor: performance1-4
       ifaces:
         svc:
           iface: eth2
